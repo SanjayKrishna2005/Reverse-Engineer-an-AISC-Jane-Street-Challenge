@@ -74,7 +74,7 @@ While the original IEEE HOST 2020 ReGDS paper established a graph-theoretic appr
 ### 2.1 The Inverse Problem of Silicon Decompilation
 
 Reverse engineering an unknown physical layout is an inherently ill-posed inverse problem:
-$$\text{RTL} \xrightarrow{\text{Synthesis}} \text{Gate Netlist} \xrightarrow{\text{P\&R}} \text{Physical Layout (GDSII)}$$
+$$\text{RTL} \xrightarrow{\text{Synthesis}} \text{Gate Netlist} \xrightarrow{\text{Place and Route}} \text{Physical Layout (GDSII)}$$
 The forward synthesis and physical design pipeline destroys design intent:
 - Signal names, comments, and high-level module hierarchies are flattened.
 - Wide multi-bit buses are bit-blasted into disjoint wires.
@@ -194,11 +194,9 @@ Bucket 3: Primitive Gates (|V| ≤ 5)
 
 Certain complex standard cells decompose into smaller, repeated structural motifs. Rather than searching for a large, monolithic 12-transistor graph, **Partial Match & Logic Stitching** identifies constituent primitives and logically stitches them:
 
-$$\begin{aligned}
-\text{MUX2:1} &\iff \text{Inverter} + 2 \times \text{Transmission Gate} \\
-\text{XOR2 / XNOR2} &\iff 2 \times \text{Inverter} + 4 \times \text{Transmission Gate} \\
-\text{Full Adder} &\iff 2 \times \text{Half Adder} + \text{OR Gate}
-\end{aligned}$$
+- **MUX2:1** $\iff \text{Inverter} + 2 \times \text{Transmission Gate}$
+- **XOR2 / XNOR2** $\iff 2 \times \text{Inverter} + 4 \times \text{Transmission Gate}$
+- **Full Adder** $\iff 2 \times \text{Half Adder} + \text{OR Gate}$
 
 ---
 
