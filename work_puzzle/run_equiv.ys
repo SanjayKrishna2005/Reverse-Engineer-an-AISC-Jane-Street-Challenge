@@ -1,0 +1,18 @@
+read_verilog /Users/sanjaykrishna/.volare/volare/sky130/versions/c6d73a35f524070e85faff4a6a9eef49553ebc2b/sky130A/libs.ref/sky130_fd_sc_hd/verilog/sky130_fd_sc_hd.v
+read_verilog udp_stubs.v
+
+read_verilog puzzle.v
+prep -top puzzle_gate
+splitnets -ports
+design -stash orig
+
+read_verilog puzzle_synth.v
+prep -top puzzle_gate
+splitnets -ports
+design -stash synth
+
+equiv_make orig synth equiv
+hierarchy -top equiv
+equiv_simple
+equiv_induct
+equiv_status -assert

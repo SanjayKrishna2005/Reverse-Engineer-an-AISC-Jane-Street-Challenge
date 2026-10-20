@@ -1,0 +1,22 @@
+read_verilog sky130_clean.v
+read_verilog -sv primitives.v
+read_verilog puzzle.v
+read_verilog puzzle_synth.v
+prep -top puzzle_gate -flatten
+async2sync
+rename puzzle_gate orig
+design -stash orig
+prep -top puzzle_gate -flatten
+async2sync
+rename puzzle_gate synth
+design -stash synth
+design -copy-from orig orig
+design -copy-from synth synth
+equiv_make orig synth equiv
+hierarchy -top equiv
+equiv_simple
+if {[catch {equiv_induct} err]} {
+    puts "Equivalence induction failed: $err"
+    exit 1
+}
+equiv_status -assert

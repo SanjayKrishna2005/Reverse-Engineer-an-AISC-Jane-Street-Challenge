@@ -1,0 +1,21 @@
+# Step 1: Read functional Verilog models for SKY130 cells
+# With FUNCTIONAL defined, sky130 cells use simple always blocks - no UDP primitives needed
+read_verilog -D FUNCTIONAL -D UNIT_DELAY work_puzzle/puzzle.v
+# Read UDP stub modules (Yosys cannot parse `primitive` keyword)
+read_verilog work_puzzle/udp_stubs.v
+read_verilog -D FUNCTIONAL -D UNIT_DELAY /Users/sanjaykrishna/.volare/volare/sky130/versions/c6d73a35f524070e85faff4a6a9eef49553ebc2b/sky130A/libs.ref/sky130_fd_sc_hd/verilog/sky130_fd_sc_hd.v
+
+# Step 2: Elaborate and flatten
+hierarchy -top puzzle_gate -check
+flatten
+proc
+opt
+
+# Step 3: Simplify the netlist into generic gates
+opt_expr
+opt_clean -purge
+share
+opt
+
+# Step 4: Write simplified Verilog
+write_verilog -noattr -nohex work_puzzle/puzzle_synth.v

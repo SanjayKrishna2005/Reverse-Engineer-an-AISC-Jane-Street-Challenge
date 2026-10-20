@@ -1,0 +1,14 @@
+read_verilog work_puzzle/puzzle_synth.v
+read_verilog -sv work_puzzle/solve_wrapper.v
+hierarchy -top solve_wrapper -check
+flatten
+proc
+opt
+clk2fflogic
+async2sync
+opt
+
+# SAT: find inputs that make success=1 at cycle 260
+# Since clk2fflogic models each clock edge as a cycle, we need 2x cycles
+# 121 cycles * 2 = 242. We'll run up to 260 steps.
+sat -seq 260 -set-init-zero -set-at 254 success 1 -show I

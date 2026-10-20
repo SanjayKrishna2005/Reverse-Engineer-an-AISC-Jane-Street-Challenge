@@ -1,0 +1,70 @@
+
+ /----------------------------------------------------------------------------\
+ |  yosys -- Yosys Open SYnthesis Suite                                       |
+ |  Copyright (C) 2012 - 2025  Claire Xenia Wolf <claire@yosyshq.com>         |
+ |  Distributed under an ISC-like license, type "license" to see terms        |
+ \----------------------------------------------------------------------------/
+ Yosys 0.51 (git sha1 c4b5190229616f7ebf8197f43990b4429de3e420, clang++ 15.0.0 -fPIC -O3)
+
+-- Executing script file `work_adder/reverse.ys' --
+
+1. Executing Liberty frontend: /Users/sanjaykrishna/.volare/volare/sky130/versions/c6d73a35f524070e85faff4a6a9eef49553ebc2b/sky130A/libs.ref/sky130_fd_sc_hd/lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+Imported 428 cell types from liberty file.
+
+2. Executing Verilog-2005 frontend: work_adder/adder_demo.v
+Parsing Verilog input from `work_adder/adder_demo.v' to AST representation.
+Generating RTLIL representation for module `\adder_demo'.
+Successfully finished Verilog frontend.
+
+3. Executing HIERARCHY pass (managing design hierarchy).
+
+3.1. Analyzing design hierarchy..
+Top module:  \adder_demo
+
+3.2. Analyzing design hierarchy..
+Top module:  \adder_demo
+Removed 0 unused modules.
+
+4. Executing OPT pass (performing simple optimizations).
+
+4.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module adder_demo.
+
+4.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\adder_demo'.
+Removed a total of 0 cells.
+
+4.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \adder_demo..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Removed 0 multiplexer ports.
+
+4.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \adder_demo.
+Performed a total of 0 changes.
+
+4.5. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\adder_demo'.
+Removed a total of 0 cells.
+
+4.6. Executing OPT_DFF pass (perform DFF optimizations).
+
+4.7. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \adder_demo..
+
+4.8. Executing OPT_EXPR pass (perform const folding).
+Optimizing module adder_demo.
+
+4.9. Finished OPT passes. (There is nothing left to do.)
+
+5. Executing Verilog backend.
+
+5.1. Executing BMUXMAP pass.
+
+5.2. Executing DEMUXMAP pass.
+Dumping module `\adder_demo'.
+
+End of script. Logfile hash: 93b18487cb, CPU: user 0.34s system 0.11s, MEM: 33.69 MB peak
+Yosys 0.51 (git sha1 c4b5190229616f7ebf8197f43990b4429de3e420, clang++ 15.0.0 -fPIC -O3)
+Time spent: 90% 2x read_liberty (0 sec), 3% 2x read_verilog (0 sec), ...
