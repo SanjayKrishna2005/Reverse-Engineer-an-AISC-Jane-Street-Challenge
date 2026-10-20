@@ -1,1 +1,0 @@
-lvs "puzzle_clean.spice puzzle" "puzzle_synth.v puzzle_gate" /Users/sanjaykrishna/.volare/volare/sky130/versions/c6d73a35f524070e85faff4a6a9eef49553ebc2b/sky130A/libs.tech/netgen/sky130A_setup.tcl lvs_synth.log

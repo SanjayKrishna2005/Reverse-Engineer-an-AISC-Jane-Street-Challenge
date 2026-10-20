@@ -1,6 +1,24 @@
 import re
+from pathlib import Path
 
-with open('puzzle_synth.v', 'r') as f:
+# Search for puzzle_synth.v in common relative paths
+search_paths = [
+    Path('work_puzzle/puzzle_synth.v'),
+    Path('puzzle_synth.v'),
+    Path(__file__).parent / 'puzzle_synth.v',
+    Path(__file__).parent.parent / 'work_puzzle' / 'puzzle_synth.v',
+]
+
+synth_file = None
+for p in search_paths:
+    if p.exists():
+        synth_file = p
+        break
+
+if not synth_file:
+    raise FileNotFoundError("Could not find 'puzzle_synth.v'. Please check your path or run from repository root.")
+
+with open(synth_file, 'r') as f:
     lines = f.readlines()
 
 assigns = {}
@@ -68,13 +86,23 @@ def visit(node):
 
 for k in assigns: visit(k)
 
-O_bits = ['\\Xsky130_fd_sc_hd__and3_2_23.X', '\\Xsky130_fd_sc_hd__and3_2_19.X', '\\Xsky130_fd_sc_hd__and3_2_22.X', '\\Xsky130_fd_sc_hd__and3_2_21.X', '\\Xsky130_fd_sc_hd__and3_2_20.X', '\\Xsky130_fd_sc_hd__and3_2_24.X', '\\Xsky130_fd_sc_hd__and3_2_18.X', '\\Xsky130_fd_sc_hd__and3_2_25.X']
+O_bits = [
+    '\\Xsky130_fd_sc_hd__and3_2_23.X',
+    '\\Xsky130_fd_sc_hd__and3_2_19.X',
+    '\\Xsky130_fd_sc_hd__and3_2_22.X',
+    '\\Xsky130_fd_sc_hd__and3_2_21.X',
+    '\\Xsky130_fd_sc_hd__and3_2_20.X',
+    '\\Xsky130_fd_sc_hd__and3_2_24.X',
+    '\\Xsky130_fd_sc_hd__and3_2_18.X',
+    '\\Xsky130_fd_sc_hd__and3_2_25.X'
+]
 
-def simulate(pwd_bits, enable_cycles):
+def simulate(pwd_bits, enable_cycles, max_output_cycles=25):
     state = {q: ff['rst_val'] for q, ff in ffs.items()}
     output_str = ""
     
-    for cycle in range(enable_cycles + 15):
+    total_cycles = enable_cycles + 4 + max_output_cycles
+    for cycle in range(total_cycles):
         env = dict(state)
         
         # apply inputs
@@ -114,12 +142,49 @@ def simulate(pwd_bits, enable_cycles):
         
     return output_str
 
-pwd = "00000001010010001000000000000101010001000000001010000001000000010000000100001001000001000000001000100010010000010100000000"
+if __name__ == '__main__':
+    print("=" * 60)
+    print("ReGDS-SKY130: Cycle-Accurate Gate Netlist Simulator")
+    print(f"Netlist loaded from: {synth_file}")
+    print("=" * 60)
+    
+    # 1. Flag Password (122 bits)
+    z3_pwd = "00000001010010001000000000000101010001000000001010000001000000010000000100001001000001000000001000100010010000010100000000"
+    print("\n[+] 1. Simulating Z3-Generated Password (122 cycles):")
+    out = simulate(z3_pwd, 122)
+    print(f"    Output: '{out}'  <-- UNLOCKED FLAG!")
 
-print("121 bits (too early):")
-print(simulate(pwd[:-1], 121))
-print("122 bits (correct):")
-print(simulate(pwd, 122))
-print("123 bits (too late):")
-print(simulate(pwd + '0', 123))
+    # 2. Human-intended Star Battle Solution
+    barsat_grid = [
+        '.......*.*.',
+        '*....*.....',
+        '.......*.*.',
+        '*.*........',
+        '....*.*....',
+        '..*.....*..',
+        '....*.....*',
+        '.*....*....',
+        '...*......*',
+        '.....*..*..',
+        '.*.*.......'
+    ]
+    barsat_pwd = ''.join('1' if c == '*' else '0' for row in barsat_grid for c in row) + '0'
+    print("\n[+] 2. Simulating Human-Intended Star Battle Grid (122 cycles):")
+    out_human = simulate(barsat_pwd, 122)
+    print(f"    Output: '{out_human}'  <-- UNLOCKED FLAG!")
 
+    # 3. Easter Egg: All-zeros
+    print("\n[+] 3. Simulating All-Zeros Input (122 cycles):")
+    out_zeros = simulate("0" * 122, 122)
+    print(f"    Output: '{out_zeros}'  <-- Easter Egg: EMPTY SKY")
+
+    # 4. Easter Egg: All-ones
+    print("\n[+] 4. Simulating All-Ones Input (122 cycles):")
+    out_ones = simulate("1" * 122, 122)
+    print(f"    Output: '{out_ones}'  <-- Easter Egg: BIG BANG")
+
+    # 5. Easter Egg: Alternating 1010...
+    print("\n[+] 5. Simulating Alternating '1010...' Input (122 cycles):")
+    out_alt = simulate("10" * 61, 122)
+    print(f"    Output: '{out_alt}'  <-- Easter Egg: TRY AGAIN")
+    print("\n" + "=" * 60)

@@ -1,9 +1,0 @@
-read_verilog work_puzzle/puzzle_synth.v
-prep -top puzzle_gate
-
-# Convert gated clocks to regular clock and enables, or at least convert async to sync
-clk2fflogic
-async2sync
-
-# Write the SMT2 model
-write_smt2 -wires work_puzzle/puzzle.smt2

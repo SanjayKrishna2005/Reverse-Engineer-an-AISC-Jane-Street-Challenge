@@ -4,7 +4,25 @@ Goal: Understand the circuit structure and extract the condition for success=1.
 """
 import re
 
-with open('work_puzzle/puzzle_synth.v', 'r') as f:
+from pathlib import Path
+
+search_paths = [
+    Path('work_puzzle/puzzle_synth.v'),
+    Path('puzzle_synth.v'),
+    Path(__file__).parent / 'puzzle_synth.v',
+    Path(__file__).parent.parent / 'work_puzzle' / 'puzzle_synth.v',
+]
+
+synth_file = None
+for p in search_paths:
+    if p.exists():
+        synth_file = p
+        break
+
+if not synth_file:
+    raise FileNotFoundError("Could not find 'puzzle_synth.v' in work_puzzle/ or local dir.")
+
+with open(synth_file, 'r') as f:
     content = f.read()
 
 # Parse all assign statements
